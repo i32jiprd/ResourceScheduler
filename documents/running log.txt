@@ -1,0 +1,250 @@
+After reading the description of the problem I realized there are 5 clear entities in the model.
+
+A Producer that generates the Messages, a Queue that stores and retrieves the messages, a Gateway Manager and a Observer that manages Message termination.
+
+Basically is a multiple consumer-producer problem with two different communication paths between the Message producer and the final consumer (Gateway), and two logic systems to 
+distribute the messages.
+
+In order to build a solution I worked entity by entity connecting then as soon as I advanced the development process enough to do so.
+
+/***************/
+
+Creation of the Producer
+
+I started the implementation creating the interfaces Message and Gateway and creating two classes that instantiate these interfaces. DummyMessage and DummyGateway.
+
+I create a Producer class and a QueueManager class. As I foresee that both will run as Threads I make both classes extends the Runnable interface
+
+Finally, I create a class named ResourceScheduler to containing an instance of each of these classes.
+
+I create a BlockingQueue, named channelProducerQueue, in order to connect the Producer with the QueueManager, so the Producer can send the messages 
+and the QueueManager can receive it asynchronously. 
+
+I place this variable in the ResourceScheduler class and pass a reference to both Producer and QueueManager classes.
+
+I add the forwardMethod(DummyMessage msg) to Producer class, and use the channelProducerQueue, to connect both classes passing a Message instance.
+
+At this point I realize that the producer class was not really needed for the problem, because the ResourceScheduler class can act as the only Producer. so, I refactor the application 
+passing all Producer methods to ResourceScheduler.
+
+I also determines that the communication channel will be an attribute of QueueManager. So, I move that attribute inside the class and make it accessible defining a getter. 
+In this way, the class were more compact. It also open the possibility of reusing the Queue entity in other applications or configurations. For example, it opens the possibility for 
+the QueueManager to work with multiple Producers just exposing the communication channel..
+
+
+Finally, I simply test the sending and receiving of Messages using the channel. I do a very simple JUnit class to test it, but it was completely overwrite after developing the Queue entity.
+
+/**********************************************************/
+
+Creation of the Queue
+
+I add a ConcurrentLinkedQueue to the QueueManager class in order to store messages. choose the ConcurrentLinkedQueue because it implements a FIFO list strategy and it is Thread safe.
+This is important because, I foresee that this class will support heavy work when used to store and/or retrieve data extensively by other classes and the data access must be as ordered
+and secure as possible.
+
+I implement a set of basic setter and getter methods in order to store and retrieve elements from the list and to know how many items compose it, avoid nulls values and such.
+
+Then, I defined an auxiliary class, GroupIdQueue, that will be used to store the list of DummyMessages belonging to each groupId and other related data.
+I also define a set of getter/setter for this class. The internal implementation of this class contains, again, a ConcurrentLinkedQueue instance to avoid synchronization and concurrency problems.
+
+Two special methods where them added, the first, named addGroupForMessage(msg), creates groupIds queues, but do not insert the message.
+
+In the QueueManager, that each time a new groupId is found a new GroupIdQueue is added. I defined the addGroupForMessage(msg) for this. 
+Additionally, if a message is enqueued instead of forwarded, it has to be stored in the correct groupId queue. I defined the enqueueMsg(DummyMessage msg) function for this.
+
+To achieve this, I extend the definition of DummyMessage in order to include two attributes, id and groupId and their corresponding getter methods. I select int types for the ease of the
+comparation operation implementation.
+
+So, in the end I finished with a FIFO list, containing others FIFO list with attributes. It was just what I need to complete the queue entity definition.
+
+Finally, I created a class Named GatewayMock to mimic the communication channel provided by the gateways when processing messages. This class extends Runnable and contains and ArrayBlockingQueue 
+that simply notified when Messages where forwarded to the channel.
+
+At this point, I was able to do some interesting JUnit test. I reused the basic JUnit test from the ResourceScheduler definition and rewrite it to created the QueueManagerTest.java file 
+and the storeMessageAndQueuesCount,addAndRetrieveTest, to determine if the QueueManager work as expected.
+
+After reviewing the test, I create a method named, showCurrentQueueStatus() in QueueMAnager to show the queue data and make it easy the testing process.
+
+I also added controls in QueueManager, GroupIdQueue and ResourceScheduler classes to ignore null Messages. And added a new test, nullMessagetSendTest() to check this functionality.
+
+I realized, that we have to implement an additional methods to retrieve data from the ResourceScheduler. E specifically a function to try to get the next Message in a series.
+I created this method and named it getNextGroupIdMessage, and add a new test extractMessagesInOrder().
+I thought that this method will form the core of the prioritization strategy and must be important when implementing one of the Extra Credit features.
+
+With all this implementation and test I finish the basic QueueManager implementation.
+
+
+/*********************************************************************/
+
+Creation of the Gateway Manager
+
+This entity was clearly composed of one class managing Resources and a set of resources. So, at first I reuse the GatewayMock class and rename it to ResourceManager. 
+This class act as container of one, or more, instances of DummyGateway.
+
+I Clearly see that DummyGateway was also a Runnable class, because they must execute their send method concurrently, and this method does not have a fixed execution time. If I does not make it runnable, they will block the entire 
+GategayManager while processing a Message.
+
+The first thing that I realized is that the GatewayManager class only need to expose to the rest of the application the list of DummyGateways and the availability of them to operate.
+
+So, the constructor of this class only needs to be provided with an optional int parameter, named resources, used to initialize the gateways.
+
+The communication with the Gateways can be provided directly from the same gateway, and the GatewayManages acts as container, limiting which resources are or no visible to the rest of the system.
+
+The other important fact,was that DummyGateways will be accesses to check availability continuously, as a consequence I stored them in a Synchronized ArrayList, and create a set of getters to detect if they are being used.
+Internally, Dummy gateways also define a communication channel modelled by ArrayBlockingQueue. This approach is similar to the implementation of the GatewayManager.
+
+The DummyGateway implementation gets a bit complicated because it has two possible ways of executing the send method.
+
+The first one is by a Message redirected by the GatewayManager. To this to occur, the Gateway has to be available. That means that it never has process a Message or that the last Message of a series is finished.
+The second one is while processing several consecutive Messages sharing the same groupId
+
+To achieve this functionality, the DummyGateway stores the Message that is processing. Only the MessageOserver class can release this message using the releaseLastMessage() method.
+While in this state, the gateway is unavailable for any other Message coming from the GatewayManager, that uses the communication channel modelled by the sendingChannel attribute to block the gateway availability.
+
+This configuration means that the DummyGateway implementation is completely isolated from the rest of the application Objects. This make possible to replace easily this implementation by a more convenient other without
+performing big modifications in the system.
+
+At this point, I made some very simple JUnit file to test some GatewayManaget and DummyGateway initializations. The file containing the test is named: GatewayManagerTest.java
+
+After Running the BasicTest again I see then failing. So, in order to maintain test integrity, I modified the QueueManager class to enable or disable the availability using a boolean attribute named, 
+isMessageProcessingEnabled and  a pair of getter/setter. Using these setters and the getQueueManager() from the ResourceScheduler class. I was able to tweak the code to pass the tests. I left this function in 
+production code as it was useful to test some cases.
+
+/*********************************************************************/
+
+Creation of the Observer
+
+At this point I started to implement the detected Observer pattern and determine how to join it with the QueueManager and the GatewayManager.
+
+In first place, I created an interface, named MessageObserver, in order to implement the behaviour for the Message interface. And also a Dummy implementation class name DefaultMessageObserver. 
+This interface defines a method with the following signature: notify(DummyGateway msg)
+
+I added an attribute, named observer, to the DummyMessage class and a setter to assign this observer. Then I coded the completed() method using the observer.
+
+At this point I see that the DefaultMessageObserver class will need a reference to GatewayManager in order to determine which resource was processing the completed message.
+Additionally, I determined that as this class will exists as a ResourceScheduler attribute, I will assign the observer reference when DummyMessages were enqueue or forwarded by the forwardMessage in the ResourceScheduler class.
+
+The MessageObserver class will need to use functions from QueueManager. For this reason, I pass an instance of this class as constructor parameter, establishing a dependency relation.
+It also need to access some information from the GatewayManager, so, I added this class as constructor parameter, establishing second dependency relation.
+
+After establishing these relations, it becomes clear to me how to establish the communications path between these entities. So, I coded an auxiliary method in QueueManager, named getAternativeMsgForGateway, used to retrieve a
+new Message when no more messages for a groupId where available.
+
+I also notice that, the Observer functionality can be easily integrated with the QueueManager, because this class has a direct relation with GatewayManager and posses the rest of the information needed to apply the next Message 
+selection strategy. Finally, I decided left it separated, because it makes the entities dependencies clear, simplifies the QueueManager code and allow us to easily add new functionality in the observer without 
+affecting the QueueManager.
+
+
+/******************************************************************/
+
+Putting all together
+
+
+Pass this point I feel in the position of trying the full solution. So I prepare the BaseTest JUnit file and pass it.
+
+I detected some hard-coded timeout and create a class, Utilities, to store these configurations as constants. So, any programmer can play with different configurations.
+
+I also need to take note of execution order, so I creates a variable,messageProcessingOrder , in GatewayManager class.
+This variable stores the issuing order of the DummyMessages to the DummyGateway classes. In order to use it I have to pass a reference to GatewayManager to each instance of DummyGateway.
+
+I also modify the JUnit to add some time in order to show the full execution order data and perform asserts over the obtained data.
+
+Finally, I added a Multiple Gateway execution tests called MultipleGatewayTest.java. I create a pair of test to try the model. TwoGatewayExampleTest(),THreeGatewayExampleTest()
+
+
+Finally a clean up and refactored some code here and there to avoid duplicates and make a more solid package division.
+Additionally I created a set of simple Java programs just to see the behaviour of the application.
+
+These programs are located in the default project package. Their names are auto descriptive.
+
+The meaning of these programs is that I am pretty new to JUnit, so I can not provide more sophisticated test, but the development of this exercise has helped me a lot to improve.
+
+
+/******************************************************************/
+
+EXTRA CREDITS
+
+
+With this basic work complete, I moved to the Extra credits features.
+
+/***************/
+Cancellation
+/***************/
+
+In order to implement this feature, I decided to use a HashMap to store/retrieve cancelled GroupIds
+I had to implement two utility methods in the ResourceScheduler Class:
+
+public boolean isCancelledGroupId(int groupId), used by  to check if the received Message has to be cancelled
+
+public void cancelGroupId(int groupId), to cancel the id and remove
+
+An additional method in QueueManager
+
+public int removeAllGroupIdMessagesFromQueue(int groupId), used to remove all remaining Messages to be processed.
+
+And finally, I added a last method to GroupIdQueue
+
+public void clearMessages(), this methods effectively clears all messages from the specific queue.
+
+
+This implementation has the advantage that it can be easily extended with the opposite function or even one that pauses the execution by just adding 
+a pair of methods and one attribute to the GroupIdQueue class.
+
+
+The test for this implementation can be found in, cancelationTest(), inside the Extrate.java file.
+
+
+/***************/
+Termination Messages
+/***************/
+
+To implement this feature I extend the DummyMessage by adding a isTerminationMessage boolean attribute and a getter method isTerminationMessage().
+I create an alternative constructor that takes an additional parameter to set if the message is or not the termination one.
+
+Then, I modified the GroupIdQueue adding a isTerminated boolean attribute, a getter method isGroupIdTerminated() and a setter method terminateGroupId()
+After that, I modified the run() method and check if a Message was marked with termination. If so, I instruct the queue manager to mark that groupId queue as terminated, 
+independently if the message is forwarded or enqueued.
+
+public boolean isTerminated(int groupId), 
+
+This method is used to check if the received Message belongs to a terminated groupId series.
+If it is the case it will raise an exception instead of just a console notification. So I created a new Exception named TerminatedGroupException and
+I modified the forwardMessage method in the ResourceScheduler class to raise this kind of exception.
+
+This change makes me refactor all the JUnit classes. I had to add a try/catch block to capture this kind of Exception because the forwardMessage declares it as throwable.
+
+
+The test for this implementation can be found in, terminationTest(), inside the Extrate.java file.
+
+/***************/
+Prioritization Strategy
+/***************/
+
+This problem of implementing this feature is two-fold.
+
+In first place, I have to extract the common functionality of the QueueManager class and isolate just the selection strategy. 
+I did this by just creating an abstract class AbstractQueueManager, and defining the following methods as abstract methods:
+
+    public abstract DummyMessage extractNextMessageForGroupId(int groupId); //Used to extract the following Message from QueueManager by a Gateway
+
+    public abstract DummyMessage getAternativeMsgForGateway();,  //Used to select a new Message from a different series, when no more Messages are available
+
+    public abstract DummyMessage extractMessage(); // Utility method used for the test cases
+
+
+By the way, I have to change the method visibility from private to protected, and the queueManager and gatewayManager attributes due to Java limitations.
+
+Then, I reuse the old QueueManager class and adapt it to extend AbstractQueueMAnager and implement the three mentioned methods.
+
+In second place, I have to solve how to instantiate the alternative class at runtime. The solution in this case was to extend the ResourceScheduler class by adding 
+a new optional constructor parameter, strategyClassName, that indicates the class name of the AbstractObserver implementation. 
+I also defined a set of default constructor to maintain compatibility with existing tests and let the class to be created with different configuration.
+
+Using this parameter, I create an utility function in ResourceScheduler class to instantiate using reflection the needed class. As the local attribute in ResourceScheduler class
+was an interface, no further changes in the code where required.
+
+To finish this approach I coded an alternative Strategy called EvenFirstObserver. This strategy priorizes the even groupId over the odd ones when processing the Message queue.
+
+
+The test for this implementation can be found in, alternativeMessagePriorizationTest(), inside the Extrate.java file.
+And also multipleGatewayEvenFisrtExampleTest()  in MultipleGatewayTest.java
