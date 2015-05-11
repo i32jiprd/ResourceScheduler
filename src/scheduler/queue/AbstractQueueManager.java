@@ -25,14 +25,6 @@ public abstract class AbstractQueueManager implements Runnable {
 	this.gatewayManager = gatewayManager;
     }
 
-    public void setMessageProcessingEnabled(boolean value) {
-	isMessageProcessingEnabled = value;
-    }
-
-    public boolean isMessageProcessingEnabled() {
-	return isMessageProcessingEnabled;
-    }
-
     public BlockingQueue getChannelFromProducer() {
 	return channelFromProducer;
     }
@@ -132,10 +124,6 @@ public abstract class AbstractQueueManager implements Runnable {
 	return group;
     }
 
-    public int getListCount() {
-	return queue.size();
-    }
-
     public int getMessageCount() {
 	Utilities.log.debug(getClass().getName() + ":: getMessageCount()");
 	if (queue.isEmpty()) {
@@ -151,18 +139,18 @@ public abstract class AbstractQueueManager implements Runnable {
     }
 
     public void showCurrentQueueStatus() {
-	StringBuffer aux = new StringBuffer(getClass().getName() + ":: showCurrentQueueStatus()" + System.getProperty("line.separator") + "---------------------------------------------");
+	StringBuffer aux = new StringBuffer(getClass().getName() + ":: showCurrentQueueStatus()" + Utilities.LINE_SEPARATOR + "---------------------------------------------");
 	if (queue.isEmpty()) {
-	    aux.append(":: Queue is Empty !!!" + System.getProperty("line.separator"));
+	    aux.append(":: Queue is Empty !!!" + Utilities.LINE_SEPARATOR);
 	} else {
-	    aux.append("::Queue Size-->" + queue.size() + System.getProperty("line.separator"));
-	    aux.append("---------------------------------------------" + System.getProperty("line.separator"));
+	    aux.append("::Queue Size-->" + queue.size() + Utilities.LINE_SEPARATOR);
+	    aux.append("---------------------------------------------" + Utilities.LINE_SEPARATOR);
 	    Iterator<GroupIdQueue> iterator = queue.iterator();
 	    while (iterator.hasNext()) {
-		aux.append(iterator.next().toString() + System.getProperty("line.separator"));
+		aux.append(iterator.next().toString() + Utilities.LINE_SEPARATOR);
 	    }
 	}
-	aux.append("---------------------------------------------" + System.getProperty("line.separator"));
+	aux.append("---------------------------------------------" + Utilities.LINE_SEPARATOR);
 	Utilities.log.debug(aux.toString());
     }
 
@@ -224,6 +212,22 @@ public abstract class AbstractQueueManager implements Runnable {
 	    }
 	}
 	return list;
+    }
+
+    /**********************************/
+
+    /* Used in JUnit */
+
+    public int getListCount() {
+	return queue.size();
+    }
+
+    public void setMessageProcessingEnabled(boolean value) {
+	isMessageProcessingEnabled = value;
+    }
+
+    public boolean isMessageProcessingEnabled() {
+	return isMessageProcessingEnabled;
     }
 
     /**********************************/

@@ -4,14 +4,11 @@ import java.util.*;
 
 import scheduler.Util.*;
 import scheduler.dummyObjects.DummyMessage;
-import scheduler.queue.DefaultQueueManager;
 
 public class GatewayManager {
 
     // We need a synchronized version of ArrayList to store data
     private final List<DummyGateway> gateways = Collections.synchronizedList(new ArrayList<DummyGateway>());
-
-    private DefaultQueueManager queueManager = null;
 
     public final List<ProcessingOrder> messageProcessingOrder = Collections.synchronizedList(new ArrayList<ProcessingOrder>());
 
@@ -67,18 +64,6 @@ public class GatewayManager {
 	return false;
     }
 
-    public void setQueueManager(DefaultQueueManager queueManager) {
-	this.queueManager = queueManager;
-    }
-
-    public DefaultQueueManager getQueueManager() {
-	return queueManager;
-    }
-
-    public int getGatewayCount() {
-	return gateways.size();
-    }
-
     public void exit() {
 	if (gateways != null) {
 	    for (int i = 0; i < gateways.size(); i++) {
@@ -125,19 +110,25 @@ public class GatewayManager {
 	return null;
     }
 
+    /* Used in JUnit tests */
+    
     public void showMessageProcessingOrder() {
-	StringBuffer aux = new StringBuffer("showMessageProcessingOrder()" + System.getProperty("line.separator"));
-	aux.append("/---------START OF LIST ----------/" + System.getProperty("line.separator"));
+	StringBuffer aux = new StringBuffer("showMessageProcessingOrder()" + Utilities.LINE_SEPARATOR);
+	aux.append("/---------START OF LIST ----------/" + Utilities.LINE_SEPARATOR);
 	if (messageProcessingOrder.isEmpty()) {
-	    aux.append("Empty List !!!" + System.getProperty("line.separator"));
+	    aux.append("Empty List !!!" + Utilities.LINE_SEPARATOR);
 	} else {
 	    for (int i = 0; i < messageProcessingOrder.size(); i++) {
-		aux.append(messageProcessingOrder.get(i) + System.getProperty("line.separator"));
+		aux.append(messageProcessingOrder.get(i) + Utilities.LINE_SEPARATOR);
 	    }
 	}
-	aux.append("/---------END OF LIST-------------/" + System.getProperty("line.separator"));
-	aux.append("Items-->" + messageProcessingOrder.size() + System.getProperty("line.separator"));
+	aux.append("/---------END OF LIST-------------/" + Utilities.LINE_SEPARATOR);
+	aux.append("Items-->" + messageProcessingOrder.size() + Utilities.LINE_SEPARATOR);
 	Utilities.log.debug(aux.toString());
+    }
+
+    public int getGatewayCount() {
+	return gateways.size();
     }
 
     public List getMessageProcessingOrder() {

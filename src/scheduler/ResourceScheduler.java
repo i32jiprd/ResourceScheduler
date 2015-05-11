@@ -56,10 +56,6 @@ public class ResourceScheduler {
 	return gatewayManager;
     }
 
-    public long getProcessedMessages() {
-	return proccesedMessages;
-    }
-
     public void exit() {
 	while (queueManager.getMessageCount() > 0) {
 	    try {
@@ -159,7 +155,15 @@ public class ResourceScheduler {
 
     /**********************************************************/
 
-    //Basic test
+    /* Used in JUnit */
+
+    public long getProcessedMessages() {
+	return proccesedMessages;
+    }
+
+    /**********************************************************/
+
+    // Basic test
     public static void main(String args[]) {
 	try {
 	    ResourceScheduler scheduler = new ResourceScheduler(1);

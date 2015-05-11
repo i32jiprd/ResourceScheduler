@@ -16,7 +16,8 @@ public class GroupIdQueue {
     private boolean isTerminated = false;
 
     public GroupIdQueue(int groupId) {
-	//Utilities.log.debug(getClass().getName() + "::GroupIdQueue(" + groupId + ")");
+	// Utilities.log.debug(getClass().getName() + "::GroupIdQueue(" +
+	// groupId + ")");
 	this.groupId = groupId;
     }
 
@@ -25,11 +26,14 @@ public class GroupIdQueue {
     }
 
     public void addMessage(DummyMessage msg) {
-	//Utilities.log.debug(getClass().getName() + ":: addMessage(" + msg + ")");
+	// Utilities.log.debug(getClass().getName() + ":: addMessage(" + msg +
+	// ")");
 	if (msg != null) {
-	    //TODO: a nice feature will be check to avoid duplicated Messages in list.
+	    // TODO: a nice feature will be check to avoid duplicated Messages
+	    // in list.
 	    queue.add(msg);
-	    //Utilities.log.debug(getClass().getName() + "::!!! added Message-->" + msg + " to queue-->" + getId());
+	    // Utilities.log.debug(getClass().getName() +
+	    // "::!!! added Message-->" + msg + " to queue-->" + getId());
 	} else {
 	    Utilities.log.error(getClass().getName() + ":: Error adding msg-->" + msg);
 	}
@@ -46,6 +50,8 @@ public class GroupIdQueue {
 	    return null;
 	}
     }
+
+    /****************************/
 
     // Used for Extra feature "Cancellation"
     public void clearMessages() {
@@ -64,16 +70,16 @@ public class GroupIdQueue {
 
     @Override
     public String toString() {
-	String aux = "[" + getId() + "][" + isGroupIdTerminated() + "][Size:" + getMessagesCount() + "]-->";
+	StringBuffer aux = new StringBuffer("[" + getId() + "][" + isGroupIdTerminated() + "][Size:" + getMessagesCount() + "]-->");
 	if (queue.isEmpty()) {
-	    aux += "Empty List!!!";
+	    aux.append("Empty List!!!");
 	} else {
 	    Iterator iterator = queue.iterator();
 	    while (iterator.hasNext()) {
-		aux += ((DummyMessage) iterator.next()).toString()+" | ";
+		aux.append(((DummyMessage) iterator.next()).toString() + " | ");
 	    }
 	}
-	return aux;
+	return aux.toString();
     }
 
 }

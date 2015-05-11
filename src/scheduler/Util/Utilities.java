@@ -11,4 +11,6 @@ public class Utilities {
 
     public static Logger log = Logger.getLogger("ResourceScheduler");
     
+    public static String LINE_SEPARATOR=System.getProperty("line.separator");
+    
 }
