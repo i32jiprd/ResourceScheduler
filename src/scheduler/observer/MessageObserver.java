@@ -4,6 +4,6 @@ import scheduler.dummyObjects.DummyMessage;
 
 public interface MessageObserver {
 
-    public void notifyObserver(DummyMessage msg);
+	void notifyObserver(DummyMessage msg);
 
 }
