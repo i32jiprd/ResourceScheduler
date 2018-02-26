@@ -32,11 +32,10 @@ public class EvenGroupIdFirstQueueManager extends AbstractQueueManager {
 	@Override
 	public DummyMessage getAternativeMsgForGateway() {
 		Utilities.log.debug(getClass().getName() + ":: getAternativeMsgForGateway()");
-		DummyMessage nextMsg = null;
+		DummyMessage nextMsg;
 		final List<GroupIdQueue> list = geNotEmptyLists();
 		if (!list.isEmpty()) {
-			for (int i = 0; i < list.size(); i++) {
-				final GroupIdQueue group = list.get(i);
+			for (final GroupIdQueue group : list) {
 				if (group.getId() % 2 == 0) {
 					if (!gatewayManager.isGroupIdBeingSent(group.getId())) {
 						nextMsg = group.extractMessage();

@@ -270,4 +270,4 @@ To finish this approach I coded an alternative Strategy called EvenFirstObserver
 
 The test for this implementation can be found in, alternativeMessagePriorizationTest(), inside the Extrate.java file.
 
-And also multipleGatewayEvenFisrtExampleTest() in MultipleGatewayTest.java
+And also multipleGatewayEvenFirstExampleTest() in MultipleGatewayTest.java

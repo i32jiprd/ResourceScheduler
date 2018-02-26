@@ -146,7 +146,7 @@ public class ExtrasTest {
 
 			scheduler.getGatewayManager().showMessageProcessingOrder();
 
-			List<ProcessingOrder> list = scheduler.getGatewayManager().getMessageProcessingOrder();
+			final List<ProcessingOrder> list = scheduler.getGatewayManager().getMessageProcessingOrder();
 
 			// We search first the last even groupId
 			// After that if we found any new even groupId the test is

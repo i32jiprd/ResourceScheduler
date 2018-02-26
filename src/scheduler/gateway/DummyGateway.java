@@ -10,11 +10,11 @@ public class DummyGateway implements Gateway, Runnable {
 
 	private int id = 0;
 
-	private volatile DummyMessage lastMsg = null;
+	private volatile DummyMessage lastMsg;
 
 	private volatile boolean exit = false;
 
-	private GatewayManager gatewayManager = null;
+	private GatewayManager gatewayManager;
 
 	private final BlockingQueue<DummyMessage> sendingChannel = new ArrayBlockingQueue<>(1);
 

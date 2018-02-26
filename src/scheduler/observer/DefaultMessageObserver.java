@@ -7,9 +7,9 @@ import scheduler.queue.AbstractQueueManager;
 
 public class DefaultMessageObserver implements MessageObserver {
 
-	private AbstractQueueManager queueManager = null;
+	private AbstractQueueManager queueManager;
 
-	private GatewayManager gatewayManager = null;
+	private GatewayManager gatewayManager;
 
 	public DefaultMessageObserver(final AbstractQueueManager queueManager, final GatewayManager gatewayManager) {
 		this.queueManager = queueManager;

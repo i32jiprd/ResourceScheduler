@@ -22,7 +22,7 @@ public class GatewayManager {
 		}
 		Utilities.log.debug(getClass().getName() + ":: Creating " + instances + " GatewayManager instance");
 		for (int i = 0; i < instances; i++) {
-			DummyGateway gateway = new DummyGateway(i, this);
+			final DummyGateway gateway = new DummyGateway(i, this);
 			gateways.add(gateway);
 			new Thread(gateway).start();
 		}
@@ -31,11 +31,11 @@ public class GatewayManager {
 	public DummyGateway getGatewaySending(int groupId) {
 		Utilities.log.debug(getClass().getName() + ":: getGatewaySending(" + groupId + ")");
 		if (gateways != null) {
-			for (int i = 0; i < gateways.size(); i++) {
-				DummyMessage msg = gateways.get(i).getLastMessageSent();
+			for (final DummyGateway dummyGateway : gateways) {
+				final DummyMessage msg = dummyGateway.getLastMessageSent();
 				if (msg != null) {
 					if (msg.getGroupId() == groupId) {
-						return gateways.get(i);
+						return dummyGateway;
 					}
 				}
 			}
@@ -49,8 +49,8 @@ public class GatewayManager {
 	public boolean isGroupIdBeingSent(int groupId) {
 		Utilities.log.debug(getClass().getName() + ":: isGroupIdBeingSent(" + groupId + ")");
 		if (gateways != null) {
-			for (int i = 0; i < gateways.size(); i++) {
-				DummyMessage msg = gateways.get(i).getLastMessageSent();
+			for (final DummyGateway dummyGateway : gateways) {
+				final DummyMessage msg = dummyGateway.getLastMessageSent();
 				if (msg != null) {
 					Utilities.log.debug(getClass().getName() + ":: Checking msg.getGroupId()-->" + msg.getGroupId()
 							+ " and " + groupId);
@@ -69,8 +69,8 @@ public class GatewayManager {
 
 	public void exit() {
 		if (gateways != null) {
-			for (int i = 0; i < gateways.size(); i++) {
-				gateways.get(i).exit();
+			for (final DummyGateway dummyGateway : gateways) {
+				dummyGateway.exit();
 			}
 		} else {
 			Utilities.log.error(getClass().getName() + ":: Error null gateways found...");
@@ -80,12 +80,11 @@ public class GatewayManager {
 	private boolean isAnyGatewayProcessingGroupId(int groupId) {
 		Utilities.log.debug(getClass().getName() + ":: isAnyGatewayProcessingGroupId(" + groupId + ")");
 		if (gateways != null) {
-			for (int i = 0; i < gateways.size(); i++) {
-				DummyGateway gateway = gateways.get(i);
-				DummyMessage msg = gateway.getLastMessageSent();
+			for (final DummyGateway dummyGateway : gateways) {
+				final DummyMessage msg = dummyGateway.getLastMessageSent();
 				if (msg != null) {
 					if (msg.getGroupId() == groupId) {
-						Utilities.log.debug(getClass().getName() + "::!!! true for-->" + gateway);
+						Utilities.log.debug(getClass().getName() + "::!!! true for-->" + dummyGateway);
 						return true;
 					}
 				}
@@ -101,12 +100,12 @@ public class GatewayManager {
 		Utilities.log.debug(getClass().getName() + ":: getAvailableGatewayForGroupIdTEST(" + groupId + ")");
 		// We left the correct gateway to process the whole groupId serie
 		if (!isAnyGatewayProcessingGroupId(groupId)) {
-			for (int i = 0; i < gateways.size(); i++) {
-				DummyGateway gateway = gateways.get(i);
-				if (gateway.isAvailable()) {
-					return gateway;
+			for (final DummyGateway dummyGateway : gateways) {
+				final DummyMessage msg = dummyGateway.getLastMessageSent();
+				if (dummyGateway.isAvailable()) {
+					return dummyGateway;
 				} else {
-					Utilities.log.debug(getClass().getName() + ":: !!! No Available Gateway-->" + gateway);
+					Utilities.log.debug(getClass().getName() + ":: !!! No Available Gateway-->" + dummyGateway);
 				}
 			}
 		}
@@ -121,8 +120,8 @@ public class GatewayManager {
 		if (messageProcessingOrder.isEmpty()) {
 			aux.append("Empty List !!!" + Utilities.LINE_SEPARATOR);
 		} else {
-			for (int i = 0; i < messageProcessingOrder.size(); i++) {
-				aux.append(messageProcessingOrder.get(i) + Utilities.LINE_SEPARATOR);
+			for (final ProcessingOrder processingOrder : messageProcessingOrder) {
+				aux.append(processingOrder + Utilities.LINE_SEPARATOR);
 			}
 		}
 		aux.append("/---------END OF LIST-------------/" + Utilities.LINE_SEPARATOR);

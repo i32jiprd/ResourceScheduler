@@ -51,7 +51,7 @@ public class QueueManagerTest {
 
 			// We wait a bit to Messages to be enqueued
 			try {
-				Thread.sleep(Utilities.WAINTING_DELAY);
+				Thread.sleep(Utilities.WAITING_DELAY);
 			} catch (final Exception e) {
 
 			}
@@ -111,7 +111,7 @@ public class QueueManagerTest {
 
 			// We wait a bit to the message to be enqueued
 			try {
-				Thread.sleep(Utilities.WAINTING_DELAY);
+				Thread.sleep(Utilities.WAITING_DELAY);
 			} catch (final Exception e) {
 
 			}
@@ -126,7 +126,7 @@ public class QueueManagerTest {
 
 			// We wait a bit to the message to be enqueued
 			try {
-				Thread.sleep(Utilities.WAINTING_DELAY);
+				Thread.sleep(Utilities.WAITING_DELAY);
 			} catch (final Exception e) {
 
 			}
@@ -139,7 +139,7 @@ public class QueueManagerTest {
 			scheduler.forwardMessage(new DummyMessage(2, 1, true));
 			// We wait a bit to the message to be enqueued
 			try {
-				Thread.sleep(Utilities.WAINTING_DELAY);
+				Thread.sleep(Utilities.WAITING_DELAY);
 			} catch (final Exception e) {
 
 			}
@@ -179,7 +179,7 @@ public class QueueManagerTest {
 
 			// We wait a bit to Messages to be enqueued
 			try {
-				Thread.sleep(Utilities.WAINTING_DELAY);
+				Thread.sleep(Utilities.WAITING_DELAY);
 			} catch (final Exception e) {
 
 			}

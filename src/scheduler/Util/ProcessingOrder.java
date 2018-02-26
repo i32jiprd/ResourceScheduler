@@ -6,7 +6,7 @@ public class ProcessingOrder {
 
 	private int gatewayId = -1;
 
-	private DummyMessage msg = null;
+	private DummyMessage msg;
 
 	public ProcessingOrder(final int gatewayId, final DummyMessage msg) {
 		this.gatewayId = gatewayId;

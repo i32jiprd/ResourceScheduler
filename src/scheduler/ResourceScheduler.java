@@ -11,11 +11,11 @@ import scheduler.queue.*;
 
 public class ResourceScheduler {
 
-	private AbstractQueueManager queueManager = null;
+	private AbstractQueueManager queueManager;
 
-	private GatewayManager gatewayManager = null;
+	private GatewayManager gatewayManager;
 
-	private MessageObserver observer = null;
+	private MessageObserver observer;
 
 	// Attribute for the Cancellation Feature
 	private final HashMap hmCacelledGroupId = new HashMap<>();
@@ -72,6 +72,7 @@ public class ResourceScheduler {
 	}
 
 	public void forwardMessage(final DummyMessage msg) throws TerminatedGroupException {
+		Utilities.log.error(getClass().getName() + ":: forwardMessage-->"  + msg);
 		if (msg == null) {
 			Utilities.log.error(getClass().getName() + ":: Error null null Message...");
 		} else if (queueManager == null) {

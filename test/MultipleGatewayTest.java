@@ -1,4 +1,5 @@
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.*;
 
@@ -37,21 +38,20 @@ public class MultipleGatewayTest {
 
 			scheduler.exit();
 
-			// And chech the final queue configuration
-			assertTrue("Invalid number of lists in queue (" + queue.getListCount() + ")", queue.getListCount() == 5);
-			assertTrue("Invalid number of Messages registered-->" + queue.getMessageCount(),
-					queue.getMessageCount() == 0);
+			// And check the final queue configuration
+			assertEquals("Invalid number of lists in queue (" + queue.getListCount() + ")", 5, queue.getListCount());
+			assertEquals("Invalid number of Messages registered-->" + queue.getMessageCount(), 0,
+					queue.getMessageCount());
 
 			// Checking processing order
 			final GatewayManager gatewayManager = scheduler.getGatewayManager();
 			gatewayManager.showMessageProcessingOrder();
 			final List<ProcessingOrder> list = gatewayManager.getMessageProcessingOrder();
 
-			assertTrue("Expected 9 messages proccesed, found  -->" + list.size(), list.size() == 9);
+			assertEquals("Expected 9 messages proccesed, found  -->" + list.size(), 9, list.size());
 
 			final Hashtable<Integer, Integer> htchecks = new Hashtable<Integer, Integer>();
-			for (int i = 0; i < list.size(); i++) {
-				final ProcessingOrder order = (ProcessingOrder) list.get(i);
+			for (final ProcessingOrder order : list) {
 				final DummyMessage msg = order.getMsg();
 				final int groupId = msg.getGroupId();
 				final int gatewayId = order.getGatewayId();
@@ -60,7 +60,7 @@ public class MultipleGatewayTest {
 					htchecks.put(groupId, gatewayId);
 				} else {
 					int referencedGateway = htchecks.get(groupId);
-					// We chech each insertion
+					// We check each insertion
 
 					// Utilities.log.debug("Checking
 					// [referencedGateway],[groupId]-->["+referencedGateway+"]["+groupId+"]-->"+order
@@ -102,7 +102,7 @@ public class MultipleGatewayTest {
 
 			scheduler.exit();
 
-			// And chech the final queue configuration
+			// And check the final queue configuration
 			assertTrue("Invalid number of lists in queue (" + queue.getListCount() + ")", queue.getListCount() == 5);
 			assertTrue("Invalid number of Messages registered-->" + queue.getMessageCount(),
 					queue.getMessageCount() == 0);
@@ -115,17 +115,16 @@ public class MultipleGatewayTest {
 			assertTrue("Expected 9 messages proccesed, found  -->" + list.size(), list.size() == 9);
 
 			final Hashtable<Integer, Integer> htchecks = new Hashtable<Integer, Integer>();
-			for (int i = 0; i < list.size(); i++) {
-				final ProcessingOrder order = (ProcessingOrder) list.get(i);
+			for (final ProcessingOrder order : list) {
 				final DummyMessage msg = order.getMsg();
-				int groupId = msg.getGroupId();
-				int gatewayId = order.getGatewayId();
+				final int groupId = msg.getGroupId();
+				final int gatewayId = order.getGatewayId();
 
 				if (htchecks.get(groupId) == null) {
 					htchecks.put(groupId, gatewayId);
 				} else {
 					int referencedGateway = htchecks.get(groupId);
-					// We chech each insertion
+					// We check each insertion
 
 					// Utilities.log.debug("Checking
 					// [referencedGateway],[groupId]-->["+referencedGateway+"]["+groupId+"]-->"+order
@@ -143,7 +142,7 @@ public class MultipleGatewayTest {
 	}
 
 	@Test
-	public void multipleGatewayEvenFisrtExampleTest() {
+	public void multipleGatewayEvenFirstExampleTest() {
 		try {
 			final ResourceScheduler scheduler = new ResourceScheduler(2,
 					"scheduler.queue.EvenGroupIdFirstQueueManager");
@@ -168,7 +167,7 @@ public class MultipleGatewayTest {
 
 			scheduler.exit();
 
-			// And chech the final queue configuration
+			// And check the final queue configuration
 			assertTrue("Invalid number of lists in queue (" + queue.getListCount() + ")", queue.getListCount() == 5);
 			assertTrue("Invalid number of Messages registered-->" + queue.getMessageCount(),
 					queue.getMessageCount() == 0);
@@ -181,8 +180,7 @@ public class MultipleGatewayTest {
 			assertTrue("Expected 9 messages proccesed, found  -->" + list.size(), list.size() == 9);
 
 			final Hashtable<Integer, Integer> htchecks = new Hashtable<Integer, Integer>();
-			for (int i = 0; i < list.size(); i++) {
-				final ProcessingOrder order = (ProcessingOrder) list.get(i);
+			for (final ProcessingOrder order : list) {
 				final DummyMessage msg = order.getMsg();
 				final int groupId = msg.getGroupId();
 				final int gatewayId = order.getGatewayId();
@@ -191,7 +189,7 @@ public class MultipleGatewayTest {
 					htchecks.put(groupId, gatewayId);
 				} else {
 					final int referencedGateway = htchecks.get(groupId);
-					// We chech each insertion
+					// We check each insertion
 
 					// Utilities.log.debug("Checking
 					// [referencedGateway],[groupId]-->["+referencedGateway+"]["+groupId+"]-->"+order

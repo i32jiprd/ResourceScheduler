@@ -15,7 +15,7 @@ public abstract class AbstractQueueManager implements Runnable {
 
 	protected final ConcurrentLinkedQueue<GroupIdQueue> queue = new ConcurrentLinkedQueue<>();
 
-	protected GatewayManager gatewayManager = null;
+	protected GatewayManager gatewayManager;
 
 	private boolean isMessageProcessingEnabled = true;
 
