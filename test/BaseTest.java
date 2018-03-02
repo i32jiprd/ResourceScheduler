@@ -44,7 +44,7 @@ public class BaseTest {
 			gatewayManager.showMessageProcessingOrder();
 			final List<ProcessingOrder> list = gatewayManager.getMessageProcessingOrder();
 
-			assertTrue("Expected 4 messages proccesed, found  -->" + list.size(), list.size() == 4);
+			assertTrue("Expected 4 messages proccesed, found -->" + list.size(), list.size() == 4);
 
 			ProcessingOrder order = (ProcessingOrder) list.get(0);
 			assertTrue("Expected Gateway 0 and Message (1,2) found -->" + order,

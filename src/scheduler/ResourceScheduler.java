@@ -72,7 +72,7 @@ public class ResourceScheduler {
 	}
 
 	public void forwardMessage(final DummyMessage msg) throws TerminatedGroupException {
-		Utilities.log.error(getClass().getName() + ":: forwardMessage-->"  + msg);
+		Utilities.log.error(getClass().getName() + ":: forwardMessage-->" + msg);
 		if (msg == null) {
 			Utilities.log.error(getClass().getName() + ":: Error null null Message...");
 		} else if (queueManager == null) {

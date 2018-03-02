@@ -109,7 +109,7 @@ performing big modifications in the system. This class is just a wrapper of the 
 At this point, I made some very simple JUnit file to test some GatewayManaget and DummyGateway initializations. The file containing the test is named: GatewayManagerTest.java
 
 After Running the BasicTest again I see then failing. So, in order to maintain test integrity, I modified the QueueManager class to enable or disable the availability using a boolean attribute named, 
-isMessageProcessingEnabled and  a pair of getter/setter. Using these setters and the getQueueManager() from the ResourceScheduler class. I was able to tweak the code to pass the tests. I left this function in 
+isMessageProcessingEnabled and a pair of getter/setter. Using these setters and the getQueueManager() from the ResourceScheduler class. I was able to tweak the code to pass the tests. I left this function in 
 production code as it was useful to test some cases.
 
 /*********************************************************************/
@@ -176,7 +176,7 @@ I had to implement two utility methods in the ResourceScheduler Class:
 
 	public boolean isCancelledGroupId(int groupId)
 
-used by  to check if the received Message has to be cancelled
+used by to check if the received Message has to be cancelled
 
 
 	public void cancelGroupId(int groupId);

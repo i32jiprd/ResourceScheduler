@@ -44,7 +44,7 @@ public class DummyMessage implements Message {
 		if (observer != null) {
 			observer.notifyObserver(this);
 		} else {
-			Utilities.log.warn(getClass().getName() + "::  null observer in Message-->" + toString());
+			Utilities.log.warn(getClass().getName() + ":: null observer in Message-->" + toString());
 		}
 	}
 

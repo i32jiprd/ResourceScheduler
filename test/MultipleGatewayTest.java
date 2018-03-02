@@ -48,7 +48,7 @@ public class MultipleGatewayTest {
 			gatewayManager.showMessageProcessingOrder();
 			final List<ProcessingOrder> list = gatewayManager.getMessageProcessingOrder();
 
-			assertEquals("Expected 9 messages proccesed, found  -->" + list.size(), 9, list.size());
+			assertEquals("Expected 9 messages proccesed, found -->" + list.size(), 9, list.size());
 
 			final Hashtable<Integer, Integer> htchecks = new Hashtable<Integer, Integer>();
 			for (final ProcessingOrder order : list) {
@@ -67,7 +67,7 @@ public class MultipleGatewayTest {
 					// );
 
 					assertTrue(
-							"Expected Gateway [" + referencedGateway + "]  for groupId--> " + groupId + "  found -->"
+							"Expected Gateway [" + referencedGateway + "] for groupId--> " + groupId + " found -->"
 									+ order.getGatewayId() + " instead in order-->" + order + order,
 							referencedGateway == order.getGatewayId());
 				}
@@ -112,7 +112,7 @@ public class MultipleGatewayTest {
 			gatewayManager.showMessageProcessingOrder();
 			final List<ProcessingOrder> list = gatewayManager.getMessageProcessingOrder();
 
-			assertTrue("Expected 9 messages proccesed, found  -->" + list.size(), list.size() == 9);
+			assertTrue("Expected 9 messages proccesed, found -->" + list.size(), list.size() == 9);
 
 			final Hashtable<Integer, Integer> htchecks = new Hashtable<Integer, Integer>();
 			for (final ProcessingOrder order : list) {
@@ -131,7 +131,7 @@ public class MultipleGatewayTest {
 					// );
 
 					assertTrue(
-							"Expected Gateway [" + referencedGateway + "]  for groupId--> " + groupId + "  found -->"
+							"Expected Gateway [" + referencedGateway + "] for groupId--> " + groupId + " found -->"
 									+ order.getGatewayId() + " instead in order-->" + order + order,
 							referencedGateway == order.getGatewayId());
 				}
@@ -177,7 +177,7 @@ public class MultipleGatewayTest {
 			gatewayManager.showMessageProcessingOrder();
 			final List<ProcessingOrder> list = gatewayManager.getMessageProcessingOrder();
 
-			assertTrue("Expected 9 messages proccesed, found  -->" + list.size(), list.size() == 9);
+			assertTrue("Expected 9 messages proccesed, found -->" + list.size(), list.size() == 9);
 
 			final Hashtable<Integer, Integer> htchecks = new Hashtable<Integer, Integer>();
 			for (final ProcessingOrder order : list) {
@@ -196,7 +196,7 @@ public class MultipleGatewayTest {
 					// );
 
 					assertTrue(
-							"Expected Gateway [" + referencedGateway + "]  for groupId--> " + groupId + "  found -->"
+							"Expected Gateway [" + referencedGateway + "] for groupId--> " + groupId + " found -->"
 									+ order.getGatewayId() + " instead in order-->" + order + order,
 							referencedGateway == order.getGatewayId());
 				}
